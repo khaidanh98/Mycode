@@ -1,0 +1,319 @@
+/*******************************************************************
+ * - Game                 : Guess Number                           *
+ * - Author               : Khai Danh                              *
+ * - Date                 : 17/01/2021                             *
+ * *****************************************************************/
+
+ /* Includes ------------------------------------------------------------------*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
+ /* Define function, const ----------------------------------------------------*/
+#define RANDOM (rand() % (10)) //random number 0 to 9
+#define NUM_ELEMENTS 4
+//debug
+#define PRINT_RANDOM //print random numbers
+//#define TEST_COUNT //print test numbers 
+
+ /* Variables for arrary-------------------------------------------------------*/
+int p[NUM_ELEMENTS]; //store numbers random
+int q[NUM_ELEMENTS]; //store numbers user enter
+static int n; 
+static char c;       //check keyboard user press
+static char yes_no ;       //check keyboard user press
+bool win = false;  
+/* declare function ----------------------------------------------------------*/
+void random_numbers();
+void game_guide();
+void play();
+bool find_index(int a[], int num_elements, int value);
+void check_win_replay();
+void check_hit_blow();
+
+
+/*
+  - check duplicate value 
+   ---------------------------------------------------------------------------*/
+bool find_index( int a[], int num_elements, int value)
+{
+	for (int i = 0; i < num_elements; i++)
+	{
+		if (a[i] == value)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+/*
+
+void random_numbers()
+{
+	int temp;
+	int i = 0;
+	while (i < NUM_ELEMENTS)
+	{
+		temp = RANDOM;
+		if (find_index(p, i, temp) == true)
+		{
+			//i--;
+		}
+		else
+		{
+			p[i] = temp;
+			i++;
+		}
+	}
+}
+/*
+  - check array user enter
+   ---------------------------------------------------------------------------*/
+bool check_arruser() //array user enter
+{
+	int temp;
+	bool tf = false;
+	if ((n > 9999) && (n < 0))
+	{
+		tf = true;
+	}
+	for (int i = 0; i < NUM_ELEMENTS; i++)
+	{
+		temp = q[i];
+		for (int j = 0; j < NUM_ELEMENTS; j++) 
+		{
+			if ((q[i] == q[j]) && (i != j))
+			{
+				tf = true;
+			}
+			if (i == j)
+			{
+				break;
+			}
+		}
+
+	}
+
+	if (tf == true)
+	{
+		printf("Wrong! Please enter again\n");
+	}
+	return tf;
+}
+/*
+  - Generate random number for array
+   ---------------------------------------------------------------------------*/
+void random_numbers() {
+	int i = 0;
+	p[0] = RANDOM;
+	bool check_dif = true;
+	while (i < (NUM_ELEMENTS - 1)) {
+		int c = RANDOM;
+		for (int j = i; j >= 0; j--) {
+			if (c == p[j]) {
+				check_dif = false;
+				break;
+			}
+		}
+		if (check_dif == true) {
+			p[i + 1] = c;
+			i++;
+		}
+		else {
+			i--;
+			check_dif = true;
+		}
+	}
+}
+
+/*
+  - start game, game guide
+   ---------------------------------------------------------------------------*/
+void game_guide() {
+	static char ready;
+	printf("1. Press p to play game\n");
+	printf("2. Enter the number you guess\n");
+	printf("3. Use HIT and BLOW to solve game\n");
+	printf("4. If you enter the correct number, you win!\n");
+	printf(" Are you sure!");
+	while (( ready!='\n')){
+		ready = getchar();
+	}
+	c = 'p';
+	printf("Let's start!\n");
+}
+/*
+  - check hit and blow value
+   ---------------------------------------------------------------------------*/
+void check_hit_blow() {
+	int count_hit = 0;
+	int count_blow = 0;
+	//check hit;
+	for (int i = 0; i < NUM_ELEMENTS; ++i) {
+		if (q[i] == p[i]) {
+			count_hit++;
+		}
+	}
+	if (count_hit == 4) {
+		win = true;
+	}
+	//check blow
+	for (int i = 0; i < NUM_ELEMENTS; i++) {
+		for (int j = 0; j < NUM_ELEMENTS; j++) {
+			if ((q[j] == p[i]) && (j != i)) {
+				count_blow++;
+			}
+		}
+	}
+	printf("  Hit = %d\n", count_hit);
+	printf("  Blow = %d\n", count_blow);
+}
+/*
+  - check win status, choose replay
+   ---------------------------------------------------------------------------*/
+void check_win_replay() {
+	if (win == true) {
+		printf("Correct number: \n");
+		for (int i = 0; i < NUM_ELEMENTS; ++i) {
+			printf("%d", p[i]);
+		}
+		printf("*************************************\n");
+		printf("*            YOU WIN                *\n");
+		printf("*        CONGRATULATIONS!           *\n");
+		printf("*************************************\n");
+		printf("Do you want to play again. Yes/No: Press y/n \n");
+		
+		do {
+			yes_no = getchar();
+		} while ((yes_no != 'y') && (yes_no != 'n'));
+		
+		if (yes_no == 'y') {
+			c = 'p';
+			random_numbers();
+			printf("* YES *\n");
+		}
+		else {
+			c = 'e';
+			printf("* NO *\n");
+		}
+	}
+	win = false;
+}
+
+/*
+  - play game
+   ---------------------------------------------------------------------------*/
+void play() {
+	while (( c !='e') ) {
+		c = getchar();
+		do {
+			printf("*************************************\n");
+			printf("Enter number:\n");
+			scanf_s("%d", &n);
+			q[0] = n / 1000;
+			q[1] = (n / 100) % 10;
+			q[2] = (n / 10) % 10;
+			q[3] = n % 10;
+			//Print random array 
+#ifdef PRINT_RANDOM
+			for (int i = 0; i < NUM_ELEMENTS; ++i) {
+				printf("%d", p[i]);
+			}
+			printf("\n");
+#endif // PRINT_RANDOM
+		} while (check_arruser() == true); //repeat if number wrong
+		check_hit_blow();
+		check_win_replay();	
+	}
+}
+
+int main() {
+	srand((int)time(0));
+	random_numbers();
+
+	printf("*************************************\n");
+	printf("**           GUESS NUMBER          **\n");
+	printf("**    Press p to PLAY              **\n"); 
+	printf("**    Press g to see GAME GUIDES   **\n");
+	printf("**    Press e to EXIT              **\n");
+	printf("**                                 **\n");
+	printf("*************************************\n");
+//Print test case
+#ifdef TEST_COUNT
+	p[0] = 8;
+	p[1] = 1;
+	p[2] = 7;
+	p[3] = 4;
+#endif // TEST_COUNT
+
+	while (c != 'e') {
+		c = getchar();
+		switch (c) {
+		case 'g':
+			game_guide();
+			break;
+		case 'p':
+			play();
+			break;
+		default:
+			printf("Press key to Play\n");
+			break;
+		}
+	}
+
+}
+
+
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include<stdbool.h>
+char string_int[10];
+int* convert(char* char_int)
+{
+	int len = strlen(char_int), i;
+	int* a = (int*)malloc(len * sizeof(int));
+	for (i = 0; i < len; i++)
+		a[i] = char_int[i] - 48;
+	return a;
+}
+bool check_string(int* b)
+{
+	bool tf = true;
+	for (int i = 0; i < strlen(string_int); i++) {
+		if (*(b + i) > 9)
+		{
+			tf = false;
+		}
+	}
+	return tf;
+}
+int main()
+{
+	int* number_ptr;
+	printf("Enter number\n");
+	scanf("%s", string_int);
+	number_ptr = convert(string_int);
+	while (check_string(number_ptr) != true) {
+		printf("Enter number again\n");
+		scanf("%s", string_int);
+		number_ptr = convert(string_int);
+	}
+
+	if (check_string(a) == true) {
+		for (int i = 0; i < strlen(string_int); i++) {
+			printf("%d  ", *(a + i));
+		}
+	}
+	else {
+		printf("Please enter again");
+	}
+	free(a);
+	return 0;
+}

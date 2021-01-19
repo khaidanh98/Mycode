@@ -1,0 +1,121 @@
+Ex1.1
+[a]  pData = &data01[6]
+
+Ex1.2
+Long
+p1 = EB00 0028
+p2 = EB00 0014
+ p1 - p2 = add/sizeof(long) = 5 => hexa
+Char
+p1 = EB00 000A
+p2 = EB00 0005
+p1 - p2 = add/sizeof(long) = 5 => hexa
+
+Ex1.3
+result = 35
+
+Ex1.4
+void magic
+{
+int temp_a = *a, temp_b =*b;
+*a = temp_a + temp_b;
+*b = temp_a - temp_b;
+}
+
+Ex2.1
+char StoC (char c)
+{
+return (c-32);
+}
+void changeString(char *data)
+{
+int i;
+for(int i =0; *(data + i) != '\0'; i++)
+{
+printf("%c", StoC(*(data + i)));
+}
+changeString(str);
+
+Ex2.2
+int my_strlen(char *data)
+{
+int i = 0, str_leng = 0;
+for(int i = 0; *(data + i) != '\0'; i++)
+{
+str_leng++;
+}
+return str_leng;
+}
+
+Ex3
+int getAreaSize2(struct fig *data)
+{
+int s;
+s = (*pFunc[data -> kind])(data ->height, data ->weight)
+return s;
+}
+
+....
+printf("%d\n", getAreaSize2(&f1));
+
+Ex5
+a = 0x55
+b = 0xC3
+
+Ex6
+/*This program is use for converting string to integer array, then square the elements of array and print */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<time.h>
+#include<string.h>
+#include<malloc.h>
+
+char a[20];
+int* array;
+/*
+-Convert string to int array
+-----------------------------------------------------------------*/
+int* convert(char* c)  //Subroutine 2 
+{
+	int len = strlen(c), i;
+	int *a = (int*)malloc(len * sizeof(int));
+	free(a);
+	for (i = 0; i < len; i++)
+	{
+		a[i] = c[i] - 48;
+	}
+	return a;
+}
+/*
+-print all elements of the array
+-----------------------------------------------------------------*/
+void print(int(*func_ptr)(int)) //Subroutine 1 has function pointer argument
+{
+	for (int i = 0; i < strlen(a); i++)
+	{
+		printf("%d ", func_ptr(i));
+	}
+
+}
+/*
+-squares the element of the array
+-----------------------------------------------------------------*/
+int square(int i)
+{
+		return (*(array + i))* (*(array + i));
+}
+
+int main()
+{
+	int* (*p)(char*);
+	p = &convert;
+	printf("Enter string:\n");
+	scanf_s("%s", a, 20);
+	array = (*p)(a); //Call Subroutine 2 by function pointer 
+	print(&square);
+}
+
+
+
