@@ -1,0 +1,378 @@
+Ex1.1
+[a]  pData = &data01[6]
+
+Ex1.2**************************************************************
+Long
+p1 = EB00 0028
+p2 = EB00 0014
+ p1 - p2 = add/sizeof(long) = 5 => hexa
+Char
+p1 = EB00 000A
+p2 = EB00 0005
+p1 - p2 = add/sizeof(long) = 5 => hexa
+
+Ex1.3**************************************************************/
+result = 35
+
+Ex1.4
+void magic
+{
+int temp_a = *a, temp_b =*b;
+*a = temp_a + temp_b;
+*b = temp_a - temp_b;
+}
+
+Ex2.1***************************************************************/
+char StoC (char c)
+{
+return (c-32);
+}
+void changeString(char *data)
+{
+int i;
+for(int i =0; *(data + i) != '\0'; i++)
+{
+printf("%c", StoC(*(data + i)));
+}
+changeString(str);
+
+Ex2.2***************************************************************/
+
+int my_strlen(char *data)
+{
+int i = 0, str_leng = 0;
+for(int i = 0; *(data + i) != '\0'; i++)
+{
+str_leng++;
+}
+return str_leng;
+}
+
+Ex2.3***************************************************************/
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+char* my_strstr(char* s1, char* s2)
+{
+    char* result;
+	int len_str1, len_str2;
+	bool flag; //check condition
+	len_str1 = strlen(s1); //Length of string 1
+	len_str2 = strlen(s2); //Length of string 2
+	for (int i = 0; i <= (len_str1 - len_str2); i++)
+	{
+		for (int j = i; j < (i + len_str2); j++)
+		{
+			flag = true;
+			if (s1[j] != s2[j - i]) 
+			{
+				flag = false;
+				break;     //The loop is immediately terminated if values are different
+			}
+		}
+		if (flag == true)
+		{
+			return (s1 + i);
+			break;
+		}
+	}
+	return ("NULL");
+}
+void main()
+{
+	char* my_strstr(char*, char*);
+	char* s1 = "abcdefghijk";
+	char* s2 = "cdef";
+	char* s3;
+	s3 = my_strstr(s1, s2);
+	printf("%s", s3);
+}
+
+Ex3*****************************************************************/
+
+int getAreaSize2(struct fig *data)
+{
+int s;
+s = (*pFunc[data -> kind])(data ->height, data ->weight)
+return s;
+}
+
+....
+printf("%d\n", getAreaSize2(&f1));
+
+Ex5****************************************************************/
+a = 0x55
+b = 0xC3
+
+Ex6****************************************************************/
+/*This program is use for converting string to integer array, then square the elements of array and print */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<time.h>
+#include<string.h>
+#include<malloc.h>
+
+char a[20];
+int* array;
+/*
+-Convert string to int array
+-----------------------------------------------------------------*/
+int* convert(char* c)  //Subroutine 2 
+{
+	int len = strlen(c), i;
+	int *a = (int*)malloc(len * sizeof(int));
+	free(a);
+	for (i = 0; i < len; i++)
+	{
+		a[i] = c[i] - 48;
+	}
+	return a;
+}
+/*
+-print all elements of the array
+-----------------------------------------------------------------*/
+void print(int(*func_ptr)(int)) //Subroutine 1 has function pointer argument
+{
+	for (int i = 0; i < strlen(a); i++)
+	{
+		printf("%d ", func_ptr(i));
+	}
+
+}
+/*
+-squares the element of the array
+-----------------------------------------------------------------*/
+int square(int i)
+{
+		return (*(array + i))* (*(array + i));
+}
+
+int main()
+{
+	int* (*p)(char*);
+	p = &convert;
+	printf("Enter string:\n");
+	scanf_s("%s", a, 20);
+	array = (*p)(a); //Call Subroutine 2 by function pointer 
+	print(&square);
+}
+
+
+/* 
+-Ex 4.1 List Linked
+--------------------------------------------------------------------*/
+
+#define _CRT_SECURE_NO_WARNING
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<time.h>
+#include<string.h>
+#include<malloc.h>
+
+struct leaf* delete(struct leaf* head, int position);
+struct leaf* deleteLast(struct leaf* head);
+struct leaf* deleteFirst(struct leaf* head);
+struct leaf* addFirst(struct leaf* head, char* value);
+struct leaf* addLast(struct leaf* head, char* value);
+struct leaf* addLeaf(char*, struct leaf*);
+struct leaf* add(struct leaf* head, char* value, int position);
+
+void printLeaves(struct leaf* p);
+void freeLeaves(struct leaf* p);
+struct leaf* addLeaf(char* data, struct leaf* top);
+
+
+
+//Ex 4
+struct leaf
+{
+	char data[16];
+	struct leaf* next;
+};
+
+int main()
+{
+
+	struct leaf *top;
+	char* fruit[3] = { "apple", "orange", "banana" };
+	top = NULL;
+	top = addLeaf(fruit[0], top); // element 3
+	top = addLeaf(fruit[1], top); // element 2
+	top = addLeaf(fruit[2], top); // element 1
+	//top = deleteFirst(top);     // delete first element
+	//top = deleteLast(top);      // delete last element
+	printLeaves(top);
+
+	/*Get number insert and fruit name, insert element into the list
+	**************************************************************************************/
+	int Insert_Number;
+	char Fruit_Name[20];
+	printf("\n");
+	printf("Enter insert number\n");
+	scanf_s("%d", &Insert_Number);
+	printf("Enter fruit name\n");
+	scanf_s("%s", Fruit_Name, (unsigned)sizeof(Fruit_Name));
+	//top = add(top, Fruit_Name, Insert_Number);
+	top = delete(top, Insert_Number);
+	/**************************************************************************************/
+
+	printLeaves(top);
+	freeLeaves(top);
+}
+
+
+
+void printLeaves(struct leaf* pL)
+{
+	while (pL != NULL)
+	{
+		printf("%s  ", pL->data);
+		pL = pL->next;
+	}
+}
+struct leaf* CreateNode(char* data) {
+	struct leaf* temp; // declare a node
+	temp = (struct leaf*)malloc(sizeof(struct leaf)); // Use malloc() to allocate memory
+	if (temp) {
+		temp->next = NULL;
+		strcpy(temp->data, data); 
+	}
+	return temp;
+}
+
+struct leaf* addFirst(struct leaf* head, char* value) {
+	struct leaf* temp = CreateNode(value); 
+	if (head == NULL) {
+		head = temp;
+	}
+	else {
+		temp->next = head; 
+		head = temp; 
+	}
+	return head;
+}
+
+struct leaf* addLast(struct leaf* head, char* value) {
+	struct leaf* temp;// Khai báo 2 node tạm temp và p
+	struct leaf* p;
+	temp = CreateNode(value);//Gọi hàm createNode để khởi tạo node temp có next trỏ tới NULL và giá trị là value
+	if (head == NULL) {
+		head = temp;     //Nếu linked list đang trống thì Node temp là head luôn
+	}
+	else {
+		p = head;// Khởi tạo p trỏ tới head
+		while (p->next != NULL) {
+			p = p->next;//Duyệt danh sách liên kết đến cuối. Node cuối là node có next = NULL
+		}
+		p->next = temp;//Gán next của thằng cuối = temp. Khi đó temp sẽ là thằng cuối(temp->next = NULL mà)
+	}
+	return head;
+}
+
+struct leaf* add(struct leaf* head, char* value, int position) 
+{
+	if (position == 0 || head == NULL) {
+		head = addFirst(head, value); // If the insertion position is 0, it is added to the beginning
+	}
+	else {
+		//Start searching where to insert. We will use k to count for positions
+		int k = 1;
+		struct leaf* p = head;
+		while (p != NULL && k != position) {
+			p = p->next;
+			++k;
+		}
+
+		if (k != position) {
+			//head = addLast(head, value);
+			 printf("The insertion position exceeds the last position!\n");
+		}
+		else {
+			struct leaf* temp = CreateNode(value);
+			temp->next = p->next;
+			p->next = temp;
+		}
+	}
+	return head;
+}
+
+struct leaf* deleteFirst(struct leaf* head)
+{
+		if (head == NULL) {
+			printf("\nCha co gi de xoa het!");
+		}
+		else {
+			head = head->next;
+		}
+		return head;
+}
+
+struct leaf* deleteLast(struct leaf* head)
+{
+	if (head == NULL || head->next == NULL) {
+		return deleteFirst(head);
+	}
+	struct leaf* p = head;
+	while (p->next->next != NULL) {
+		p = p->next;
+	}
+	p->next = p->next->next; // Cho next bằng NULL
+	return head;
+}
+
+struct leaf* delete(struct leaf* head, int position) {
+	if (position == 0 || head == NULL || head->next == NULL) {
+		head = deleteFirst(head); // If the position is 1, that is the first element
+	}
+	else {
+		// Start searching where to insert. We will use k to count for positions
+		int k = 1;
+		struct leaf* p = head;
+		while (p->next->next != NULL && k != position) {
+			p = p->next;
+			++k;
+		}
+
+		if (k != position) {
+		// If we browse through the list and still have not reached the location to insert,
+	    // we will delete the end by default
+		head = deleteLast(head);
+		}
+		else {
+			p->next = p->next->next;
+		}
+	}
+	return head;
+}
+
+struct leaf* addLeaf(char* data, struct leaf* top)
+{
+	struct leaf* pL = (struct leaf*)malloc(sizeof(struct leaf));
+	if (pL) 
+	{
+		strcpy(pL->data, data);
+		pL->next = top;
+	}
+	top = pL;
+	return top;
+}
+
+void freeLeaves(struct leaf* pL)
+{
+	struct leaf* pLnext;
+	while (pL != NULL)
+	{
+		pLnext = pL->next;
+		free(pL);
+		pL = pLnext;
+	}
+}
+
+
+
+
