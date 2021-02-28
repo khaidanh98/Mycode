@@ -1,0 +1,59 @@
+1. How to prepare buffer?
+- The component must be in the idle  state by using SendCommand(handle, OMX CommandStateSet, OMX StateIdle) 
+
+2. Meaning of OMX and condition for the event occur.
+Condition for the event occur: successful execution of a command, detection of a marked buffer by a component, component changes its
+port settings, an end of stream is encountered, a component gets resources that it has been waiting for.
+
+3. How to config a port?
+- OMX_GetParameter is called to retrieve the number of ports supported by OMX component 
+( OMX_GetParameter(handle, OMX_IndexParamPortDefinition, &portdef) )
+- The component returns the number of ports supported as well as the base port index to
+retrieve the individual port configuration.
+- For each port, the client can get information about the preferred buffer size, number of
+buffers, etc., of the component. (OMX_GetParameter(handle, OMX_IndexParamPortDefinition, &portDefn)
+- The IL client can call OMX_SetParameter to configure the port with either the configuration
+retrieved or with a different configuration.
+
+Configuration parameters of port: 
+nBufferCOuntMin: The minimum number of buffers this port requires
+nBufferSize: Minimum buffer size in bytes allocated for this port
+eDir: Direction of port
+bEnabled: Ports have a state flag as to whether they are enabled or disabled
+eDomain
+
+(Then for each type of struct there is a corresponding index value. For the OMX_PARAM_PORTDEFINITIONTYPE, the index is OMX_IndexParamPortDefinition)
+
+
+4. Is it true "The number of OMX_EmptyThisBuffer should equal with the number of OMX_FillThisBuffer"?
+No, it's wrong.
+
+5. When should we use Mark Buffer?
+
+6. What case in which buffer payload will be use?
+Case 1: Each buffer is filled in whole or in part.
+Case 2: Each buffer is filled with only complete frames of compressed data.
+
+7. Can we send OMX_EmptyThisBuffer when FillBufferDone has not callback yet?
+Yes, we can. 
+
+8. What is component sources, sinks?
+Component with a single output port are referred to as source components.
+Component with a single input port are referred to as sink components.
+
+9. What happen when not allocating enough buffer that was defined in the port definition?
+The component will raise an error event to IL-Client.
+
+10. What is resource concealment methods?
+Resource concealment method is a technique used in signal processing that aims
+to minimize the deterioration of signals caused by missing data
+
+11. What is different between OMX_AllocateBuffer and OMX_UseBuffer?
+
+12. Can we count the number of output image by counting number of OMX_FillThisBuffer? If not, please describe how to count number of output image!
+
+13. What should IL-Client do when receiving an Event error?
+The IL Client shall stop, de-initialize, unload, and reload the component when the IL Client detects an event error.
+
+OMX_BUFFERFLAG_EOS
+
